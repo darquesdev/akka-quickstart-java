@@ -13,7 +13,7 @@ public class AkkaQuickstart {
       //#create-actors
       final ActorRef printerActor = 
         system.actorOf(Printer.props(), "printerActor");
-      final ActorRef howdyGreeter = 
+      final ActorRef howdyGreeter =
         system.actorOf(Greeter.props("Howdy", printerActor), "howdyGreeter");
       final ActorRef helloGreeter = 
         system.actorOf(Greeter.props("Hello", printerActor), "helloGreeter");
@@ -29,6 +29,7 @@ public class AkkaQuickstart {
       howdyGreeter.tell(new Greet(), ActorRef.noSender());
 
       helloGreeter.tell(new WhoToGreet("Java"), ActorRef.noSender());
+      helloGreeter.tell(new Capitalize(), ActorRef.noSender());
       helloGreeter.tell(new Greet(), ActorRef.noSender());
 
       goodDayGreeter.tell(new WhoToGreet("Play"), ActorRef.noSender());

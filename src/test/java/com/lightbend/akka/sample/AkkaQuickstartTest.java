@@ -35,4 +35,15 @@ public class AkkaQuickstartTest {
         Greeting greeting = testProbe.expectMsgClass(Greeting.class);
         assertEquals("Hello, Akka", greeting.message);
     }
+
+    @Test
+    public void testGreeterActorSendingOfCapitalizedGreeting() {
+        final TestKit testProbe = new TestKit(system);
+        final ActorRef helloGreeter = system.actorOf(Greeter.props("Hello", testProbe.getRef()));
+        helloGreeter.tell(new WhoToGreet("Akka"), ActorRef.noSender());
+        helloGreeter.tell(new Capitalize(), ActorRef.noSender());
+        helloGreeter.tell(new Greet(), ActorRef.noSender());
+        Greeting greeting = testProbe.expectMsgClass(Greeting.class);
+        assertEquals("HELLO, AKKA", greeting.message);
+    }
 }

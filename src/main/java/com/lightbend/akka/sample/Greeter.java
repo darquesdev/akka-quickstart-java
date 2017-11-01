@@ -3,11 +3,13 @@ package com.lightbend.akka.sample;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.japi.pf.FI;
 import com.lightbend.akka.sample.Printer.Greeting;
 
 //#greeter-messages
 public class Greeter extends AbstractActor {
 //#greeter-messages
+
   static public Props props(String message, ActorRef printerActor) {
     return Props.create(Greeter.class, () -> new Greeter(message, printerActor));
   }
@@ -25,6 +27,11 @@ public class Greeter extends AbstractActor {
     public Greet() {
     }
   }
+
+  static public class Capitalize {
+    public Capitalize() {
+    }
+  }
   //#greeter-messages
 
   private final String message;
@@ -39,14 +46,13 @@ public class Greeter extends AbstractActor {
   @Override
   public Receive createReceive() {
     return receiveBuilder()
-        .match(WhoToGreet.class, wtg -> {
-          this.greeting = message + ", " + wtg.who;
-        })
+        .match(WhoToGreet.class, wtg -> this.greeting = message + ", " + wtg.who)
         .match(Greet.class, x -> {
           //#greeter-send-message
           printerActor.tell(new Greeting(greeting), getSelf());
           //#greeter-send-message
         })
+        .match(Capitalize.class, capitalize -> greeting = greeting.toUpperCase())
         .build();
   }
 //#greeter-messages
